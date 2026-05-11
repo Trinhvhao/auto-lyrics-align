@@ -1,11 +1,11 @@
-# 🎤 Vietnamese Lyric Alignment - Karaoke Player
+# 🎤 Auto Lyrics Align - Vietnamese Karaoke
 
 Ứng dụng web chuyên nghiệp để căn chỉnh lời bài hát với nhạc nền, tạo hiệu ứng chữ nhảy múa đồng bộ (karaoke) bằng Wav2Vec2 AI Model.
 
 ## 📁 Cấu trúc Dự án
 
 ```
-lyric-karaoke-app/
+auto-lyrics-align/
 ├── backend/
 │   └── fastapi_app.py              # API Backend (FastAPI)
 ├── frontend/
@@ -13,10 +13,13 @@ lyric-karaoke-app/
 │       └── index.html              # Web UI (HTML/CSS/JS)
 ├── models/
 │   ├── alignment-code/             # Source code mô hình (Wav2Vec2CTC)
-│   └── lyric-alignment/            # AI Model weights (tải từ Hugging Face)
-├── uploads/                        # Thư mục lưu file âm thanh tải lên
-├── run.sh                          # Script khởi động (chính)
-└── README.md                       # File này
+│   └── lyric-alignment/            # AI Model weights
+├── docs/                           # Documentation
+├── examples/                       # Demo files & examples
+├── scripts/                        # Utility scripts
+├── uploads/                        # Runtime folder (lưu file tải lên)
+├── run.sh                          # Entry point (khởi động app)
+└── README.md
 ```
 
 ## 🚀 Cách Chạy
@@ -24,7 +27,7 @@ lyric-karaoke-app/
 ### 1. **Khởi động Server FastAPI**
 
 ```bash
-cd /hdd3/nhannv/Hello/TrinhHao/lyric-karaoke-app
+cd auto-lyrics-align
 ./run.sh
 ```
 
