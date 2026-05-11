@@ -37,7 +37,26 @@ source lyric_env/bin/activate  # Linux/macOS
 pip install -r requirements.txt
 ```
 
-### 2. **Khởi động Server**
+### 2. **Tải model từ Hugging Face (bắt buộc)**
+
+```bash
+# Cài công cụ tải model (một lần)
+pip install -U huggingface-hub
+
+# Tải model về đúng thư mục local
+mkdir -p models/lyric-alignment
+hf download nguyenvulebinh/lyric-alignment --local-dir models/lyric-alignment
+```
+
+Nếu không có lệnh `hf`, bạn có thể dùng:
+
+```bash
+huggingface-cli download nguyenvulebinh/lyric-alignment --local-dir models/lyric-alignment
+```
+
+Kỳ vọng có file `pytorch_model.bin` trong `models/lyric-alignment/`.
+
+### 3. **Khởi động Server**
 
 ```bash
 ./run.sh
