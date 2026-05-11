@@ -1,0 +1,19 @@
+# ML/Advanced features - Additional dependencies for audio processing examples
+-r requirements.txt
+
+# Vocal Separation & Enhancement
+demucs>=4.0.0
+julius>=0.2.7
+
+# Advanced Transcription & Speech Recognition
+whisperx>=3.0.0
+librosa>=0.10.0
+
+# Video Processing
+moviepy>=1.0.3
+imageio>=2.32.0
+imageio-ffmpeg>=1.4.0
+
+# Audio Visualization
+matplotlib>=3.8.0
+soundfile>=0.12.1

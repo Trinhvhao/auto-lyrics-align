@@ -1,0 +1,37 @@
+# ===== CORE DEPENDENCIES =====
+# FastAPI & Server
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
+python-multipart>=0.0.6
+
+# Deep Learning & Audio Processing
+torch>=2.0.0
+torchaudio>=2.0.0
+transformers>=4.30.0
+
+# Data Processing
+numpy>=1.24.0
+tqdm>=4.66.0
+
+# Vietnamese NLP
+vinorm>=0.2.2
+regtag>=0.1.0
+decorator>=5.1.0
+
+# ===== OPTIONAL DEPENDENCIES =====
+# Video Generation (for lyrics_align.py example)
+moviepy>=1.0.3
+Pillow>=10.0.0
+imageio>=2.32.0
+
+# Audio Enhancement (optional - vocal separation)
+demucs>=4.0.0
+
+# Speech Recognition (optional - transcript generation)
+# whisperx>=3.0.0  # Uncomment if needed
+
+# Development & Testing
+pytest>=7.4.0
+black>=23.10.0
+flake8>=6.1.0

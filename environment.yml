@@ -1,0 +1,44 @@
+name: lyric_env
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  # Python
+  - python=3.10
+  
+  # PyTorch GPU support (modify if CPU-only)
+  - pytorch::pytorch::*[version='>=2.0']
+  - pytorch::pytorch-cuda=12.1
+  - pytorch::torchaudio
+  - pytorch::torchvision
+  
+  # Build tools
+  - pip
+  - setuptools
+  - wheel
+  
+  # Development tools (optional)
+  - git
+  - jupyter
+  
+pip:
+  # Core dependencies
+  - fastapi>=0.104.1
+  - uvicorn[standard]>=0.24.0
+  - pydantic>=2.0.0
+  - python-multipart>=0.0.6
+  
+  # ML & NLP
+  - transformers>=4.30.0
+  - numpy>=1.24.0
+  - tqdm>=4.66.0
+  - vinorm>=0.2.2
+  - regtag>=0.1.0
+  - decorator>=5.1.0
+  
+  # Audio & Video (optional)
+  - moviepy>=1.0.3
+  - Pillow>=10.0.0
+  - imageio>=2.32.0
+  - demucs>=4.0.0

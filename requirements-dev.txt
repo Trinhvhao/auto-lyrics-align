@@ -1,0 +1,20 @@
+# Development dependencies (includes all from requirements.txt + extras)
+-r requirements.txt
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+
+# Code Quality
+black>=23.10.0
+flake8>=6.1.0
+pylint>=3.0.0
+isort>=5.12.0
+
+# Documentation
+mkdocs>=1.5.0
+mkdocs-material>=9.4.0
+
+# API Documentation
+# Automatically provided by FastAPI with /docs endpoint

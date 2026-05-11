@@ -22,14 +22,39 @@ auto-lyrics-align/
 └── README.md
 ```
 
-## 🚀 Cách Chạy
+## 🚀 Quick Start
 
-### 1. **Khởi động Server FastAPI**
+### 1. **Tạo Environment & Cài Dependencies** (Lần Đầu)
 
 ```bash
-cd auto-lyrics-align
+# Option A: Dùng Conda (Recommended)
+conda env create -f environment.yml
+conda activate lyric_env
+
+# Option B: Dùng pip + venv
+python3 -m venv lyric_env
+source lyric_env/bin/activate  # Linux/macOS
+pip install -r requirements.txt
+```
+
+### 2. **Khởi động Server**
+
+```bash
 ./run.sh
 ```
+
+Truy cập: http://localhost:8000
+
+---
+
+## 📚 Chi Tiết Cài Đặt
+
+Xem [INSTALLATION.md](docs/INSTALLATION.md) để:
+- ✅ Cài đặt từng bước
+- ✅ Giải quyết vấn đề phổ biến
+- ✅ Cài thêm dependencies (dev, ML)
+- ✅ Verify cài đặt
+- ✅ Troubleshooting guide
 
 Hoặc chạy trực tiếp:
 
