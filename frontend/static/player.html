@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 Lyrics Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0f;
+            color: #fff;
+            font-family: 'Segoe UI', 'Be Vietnam Pro', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 120%, #1a0a2e 0%, #0a0a0f 60%);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+            gap: 2rem;
+        }
+
+        /* Song info */
+        .song-info {
+            text-align: center;
+        }
+
+        .song-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 0.02em;
+        }
+
+        .song-artist {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.45);
+            margin-top: 4px;
+        }
+
+        /* Lyrics display area */
+        .lyrics-area {
+            width: 100%;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.2rem;
+            text-align: center;
+        }
+
+        .lyric-line {
+            font-size: 2.4rem;
+            font-weight: 800;
+            line-height: 1.25;
+            letter-spacing: -0.01em;
+            color: rgba(255, 255, 255, 0.18);
+            transition: all 0.3s ease;
+            cursor: default;
+            text-shadow: none;
+            max-width: 100%;
+        }
+
+        .lyric-line.prev {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.28);
+            font-weight: 600;
+        }
+
+        .lyric-line.active {
+            font-size: 2.6rem;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 0 40px rgba(255, 200, 60, 0.25);
+        }
+
+        .lyric-line.next {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.35);
+            font-weight: 600;
+        }
+
+        /* Word-level highlight */
+        .word {
+            display: inline;
+            transition: color 0.12s ease;
+            margin: 0 2px;
+        }
+
+        .word.done {
+            color: #FFD43B;
+        }
+
+        .word.current {
+            color: #FF9500;
+            text-shadow: 0 0 20px rgba(255, 149, 0, 0.5);
+        }
+
+        /* Progress bar */
+        .progress-wrap {
+            width: 100%;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF9500, #FFD43B);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .time-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.5rem;
+            padding: 8px;
+            border-radius: 50%;
+            transition: color 0.2s, transform 0.15s;
+            line-height: 1;
+        }
+
+        .btn:hover {
+            color: #fff;
+            transform: scale(1.08);
+        }
+
+        .btn-play {
+            background: #fff;
+            color: #0a0a0f;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-play:hover {
+            background: #FFD43B;
+            color: #0a0a0f;
+            transform: scale(1.05);
+        }
+
+        /* Upload section */
+        .upload-area {
+            width: 100%;
+            border: 1.5px dashed rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: rgba(255, 200, 60, 0.5);
+            background: rgba(255, 200, 60, 0.04);
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.5;
+        }
+
+        .upload-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .upload-label b {
+            color: rgba(255, 200, 60, 0.8);
+            font-weight: 500;
+        }
+
+        .upload-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .upload-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-align: left;
+        }
+
+        .upload-row label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        input[type="file"],
+        input[type="text"],
+        textarea {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            width: 100%;
+            outline: none;
+            font-family: inherit;
+        }
+
+        input[type="file"] {
+            padding: 8px;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-load {
+            background: linear-gradient(135deg, #FF9500, #FFD43B);
+            color: #0a0a0f;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 28px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            letter-spacing: 0.02em;
+            transition: opacity 0.2s, transform 0.15s;
+        }
+
+        .btn-load:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* Mode toggle */
+        .mode-toggle {
+            display: flex;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 4px;
+        }
+
+        .mode-btn {
+            padding: 6px 16px;
+            font-size: 0.78rem;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            background: none;
+            color: rgba(255, 255, 255, 0.4);
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+
+        .player-view,
+        .setup-view {
+            width: 100%;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Status */
+        .status {
+            font-size: 0.75rem;
+            color: rgba(255, 200, 60, 0.7);
+            text-align: center;
+            min-height: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- SETUP VIEW -->
+        <div class="setup-view" id="setupView">
+            <div style="text-align:center; margin-bottom:1.5rem;">
+                <div style="font-size:2rem; margin-bottom:0.5rem;">🎵</div>
+                <div style="font-size:1.2rem; font-weight:700; color:#fff;">Lyrics Player</div>
+                <div style="font-size:0.8rem; color:rgba(255,255,255,0.35); margin-top:4px;">
+                    Tải nhạc + lyrics để xem preview
+                </div>
+            </div>
+
+            <div class="upload-inputs">
+                <div class="upload-row">
+                    <label>🎧 File Audio (mp3 / wav)</label>
+                    <input type="file" id="audioFile" accept="audio/*">
+                </div>
+
+                <div class="upload-row">
+                    <label>📝 Tên bài / Nghệ sĩ (tuỳ chọn)</label>
+                    <input type="text" id="songTitle" placeholder="Ví dụ: Trở Về Quá Khứ — Sơn Tùng">
+                </div>
+
+                <div class="mode-toggle" style="margin:4px 0;">
+                    <button class="mode-btn active" onclick="setMode('manual')" id="btnManual">
+                        ✍️ Nhập lyrics + timestamps
+                    </button>
+                    <button class="mode-btn" onclick="setMode('json')" id="btnJson">
+                        📦 Dán file JSON
+                    </button>
+                </div>
+
+                <!-- Manual mode -->
+                <div id="manualMode">
+                    <div class="upload-row">
+                        <label>📋 Lyrics (mỗi dòng: [mm:ss.xx] lời bài hát)</label>
+                        <textarea id="lyricsText"
+                            placeholder="[00:05.20] Nói bỏ lỡ rồi sẽ tiếc cho mà xem&#10;[00:09.80] Đừng để một ngày em bước ra khỏi đây&#10;[00:14.30] Vì anh biết khi đã mất đi rồi&#10;[00:19.10] Chỉ còn lại những tiếc nuối thôi&#10;[00:24.00] Nói bỏ lỡ rồi sẽ tiếc cho mà xem"></textarea>
+                    </div>
+                    <div style="font-size:0.72rem; color:rgba(255,255,255,0.25); margin-top:-4px;">
+                        Format LRC chuẩn: [phút:giây.xx] — hoặc dùng output từ script Python lyrics_align.py
+                    </div>
+                </div>
+
+                <!-- JSON mode -->
+                <div id="jsonMode" class="hidden">
+                    <div class="upload-row">
+                        <label>📦 Paste nội dung file JSON (output từ lyrics_align.py)</label>
+                        <textarea id="jsonText"
+                            placeholder='{"lines": [{"text": "Nói bỏ lỡ rồi", "start": 5.2, "end": 8.9, "words": [...]}, ...]}'></textarea>
+                    </div>
+                </div>
+
+                <button class="btn-load" onclick="loadPlayer()">▶ Xem Preview</button>
+            </div>
+        </div>
+
+        <!-- PLAYER VIEW -->
+        <div class="player-view hidden" id="playerView">
+            <div
+                style="display:flex; justify-content:space-between; width:100%; align-items:center; margin-bottom:1rem;">
+                <button onclick="backToSetup()"
+                    style="background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:0.8rem;">
+                    ← Quay lại
+                </button>
+                <div class="song-info" style="text-align:center;">
+                    <div class="song-title" id="displayTitle">Bài hát</div>
+                </div>
+                <div style="width:60px;"></div>
+            </div>
+
+            <div class="lyrics-area" id="lyricsArea">
+                <div class="lyric-line active" id="currentLine">♪</div>
+            </div>
+
+            <div class="status" id="status"></div>
+
+            <div class="progress-wrap">
+                <div class="progress-bar" id="progressBar" onclick="seekClick(event)">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="time-row">
+                    <span id="timeElapsed">0:00</span>
+                    <span id="timeDuration">0:00</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn" onclick="skipBack()" title="Quay lại 5s">⟪</button>
+                <button class="btn btn-play" id="playBtn" onclick="togglePlay()">▶</button>
+                <button class="btn" onclick="skipFwd()" title="Tua 5s">⟫</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audioPlayer"></audio>
+
+    <script>
+        let lines = [];
+        let words = [];
+        let currentLineIdx = -1;
+        let animFrame;
+        let inputMode = 'manual';
+        const audio = document.getElementById('audioPlayer');
+        let currentAudioHash = ''; // Hash để identify bài nhạc hiện tại
+
+        // ============================================================
+        // LOCALSTORAGE FUNCTIONS
+        // ============================================================
+        function generateAudioHash(file) {
+            // Tạo hash đơn giản từ tên file + size + lastModified
+            return `audio_${file.name}_${file.size}_${file.lastModified}`;
+        }
+
+        function saveSettings() {
+            if (!currentAudioHash) return;
+
+            const settings = {
+                audioHash: currentAudioHash,
+                songTitle: document.getElementById('songTitle').value.trim(),
+                inputMode: inputMode,
+                lyricsText: document.getElementById('lyricsText').value.trim(),
+                jsonText: document.getElementById('jsonText').value.trim(),
+                lines: lines,
+                words: words,
+                savedAt: new Date().toISOString()
+            };
+
+            try {
+                localStorage.setItem(`karaoke_player_${currentAudioHash}`, JSON.stringify(settings));
+                console.log('✅ Settings saved for:', currentAudioHash);
+            } catch (e) {
+                console.warn('❌ Failed to save settings:', e);
+            }
+        }
+
+        function loadSettings(audioHash) {
+            try {
+                const saved = localStorage.getItem(`karaoke_player_${audioHash}`);
+                if (!saved) return false;
+
+                const settings = JSON.parse(saved);
+                console.log('✅ Settings loaded for:', audioHash, '(saved at:', settings.savedAt, ')');
+
+                // Restore form values
+                document.getElementById('songTitle').value = settings.songTitle || '';
+                document.getElementById('lyricsText').value = settings.lyricsText || '';
+                document.getElementById('jsonText').value = settings.jsonText || '';
+
+                // Restore mode
+                if (settings.inputMode) {
+                    setMode(settings.inputMode);
+                }
+
+                // Restore parsed data
+                if (settings.lines) lines = settings.lines;
+                if (settings.words) words = settings.words;
+
+                return true;
+            } catch (e) {
+                console.warn('❌ Failed to load settings:', e);
+                return false;
+            }
+        }
+
+        function setMode(mode) {
+            inputMode = mode;
+            document.getElementById('manualMode').classList.toggle('hidden', mode !== 'manual');
+            document.getElementById('jsonMode').classList.toggle('hidden', mode !== 'json');
+            document.getElementById('btnManual').classList.toggle('active', mode === 'manual');
+            document.getElementById('btnJson').classList.toggle('active', mode === 'json');
+
+            // Save mode change
+            if (currentAudioHash) saveSettings();
+        }
+
+        function parseLRC(text) {
+            const result = [];
+            const regex = /\[(\d+):(\d+\.\d+)\]\s*(.+)/g;
+            let match;
+
+            while ((match = regex.exec(text)) !== null) {
+                const m = parseInt(match[1]);
+                const s = parseFloat(match[2]);
+                result.push({
+                    text: match[3].trim(),
+                    start: m * 60 + s
+                });
+            }
+
+            result.sort((a, b) => a.start - b.start);
+
+            for (let i = 0; i < result.length; i++) {
+                result[i].end = (result[i + 1] ? result[i + 1].start - 0.1 : result[i].start + 4);
+                result[i].words = result[i].text.split(' ').map((w, idx, arr) => {
+                    const dur = (result[i].end - result[i].start) / arr.length;
+                    return {
+                        word: w,
+                        start: result[i].start + idx * dur,
+                        end: result[i].start + (idx + 1) * dur
+                    };
+                });
+            }
+
+            return result;
+        }
+
+        function loadPlayer() {
+            const fileInput = document.getElementById('audioFile');
+            const titleInput = document.getElementById('songTitle').value.trim();
+
+            // Parse lyrics
+            if (inputMode === 'manual') {
+                const raw = document.getElementById('lyricsText').value.trim();
+                if (!raw) {
+                    alert('Vui lòng nhập lyrics!');
+                    return;
+                }
+                lines = parseLRC(raw);
+            } else {
+                try {
+                    const data = JSON.parse(document.getElementById('jsonText').value.trim());
+                    lines = data.lines || [];
+                    words = data.words || [];
+                } catch (e) {
+                    alert('JSON không hợp lệ!');
+                    return;
+                }
+            }
+
+            if (!lines.length) {
+                alert('Không tìm thấy lyrics!');
+                return;
+            }
+
+            // Load audio
+            if (fileInput.files[0]) {
+                audio.src = URL.createObjectURL(fileInput.files[0]);
+            }
+
+            // Show player
+            document.getElementById('displayTitle').textContent = titleInput || 'Bài hát';
+            document.getElementById('setupView').classList.add('hidden');
+            document.getElementById('playerView').classList.remove('hidden');
+
+            renderLines(0);
+            startLoop();
+        }
+
+        function backToSetup() {
+            audio.pause();
+            cancelAnimationFrame(animFrame);
+            document.getElementById('setupView').classList.remove('hidden');
+            document.getElementById('playerView').classList.add('hidden');
+        }
+
+        function renderLines(activeIdx) {
+            const area = document.getElementById('lyricsArea');
+            area.innerHTML = '';
+
+            const show = [-1, 0, 1]; // prev, active, next
+            show.forEach(offset => {
+                const idx = activeIdx + offset;
+                if (idx < 0 || idx >= lines.length) return;
+
+                const div = document.createElement('div');
+                div.className = 'lyric-line' +
+                    (offset === -1 ? ' prev' : offset === 0 ? ' active' : ' next');
+
+                if (offset === 0) {
+                    // Word-level display
+                    lines[idx].words.forEach((w, wi) => {
+                        const span = document.createElement('span');
+                        span.className = 'word';
+                        span.id = `w_${wi}`;
+                        span.textContent = w.word;
+                        div.appendChild(span);
+                        div.appendChild(document.createTextNode(' '));
+                    });
+                } else {
+                    div.textContent = lines[idx].text;
+                }
+
+                area.appendChild(div);
+            });
+
+            currentLineIdx = activeIdx;
+        }
+
+        function startLoop() {
+            function tick() {
+                const t = audio.currentTime;
+                const dur = audio.duration || 1;
+
+                document.getElementById('progressFill').style.width = (t / dur * 100).toFixed(2) + '%';
+                document.getElementById('timeElapsed').textContent = fmt(t);
+                document.getElementById('timeDuration').textContent = fmt(dur);
+
+                // Find current line
+                let newIdx = -1;
+                for (let i = 0; i < lines.length; i++) {
+                    if (t >= lines[i].start && t <= lines[i].end) {
+                        newIdx = i;
+                        break;
+                    }
+                }
+
+                if (newIdx === -1) {
+                    // Before first line or between lines
+                    newIdx = lines.findIndex(l => l.start > t) - 1;
+                    if (newIdx < 0) newIdx = 0;
+                }
+
+                if (newIdx !== currentLineIdx) renderLines(newIdx);
+
+                // Word highlight
+                if (newIdx >= 0 && newIdx < lines.length) {
+                    lines[newIdx].words.forEach((w, wi) => {
+                        const el = document.getElementById(`w_${wi}`);
+                        if (!el) return;
+
+                        if (t >= w.end) el.className = 'word done';
+                        else if (t >= w.start) el.className = 'word current';
+                        else el.className = 'word';
+                    });
+                }
+
+                // Status
+                const nextLine = lines[currentLineIdx + 1];
+                if (nextLine && (nextLine.start - t) < 3 && (nextLine.start - t) > 0) {
+                    document.getElementById('status').textContent = `Sắp tới: ${nextLine.text}`;
+                } else {
+                    document.getElementById('status').textContent = '';
+                }
+
+                animFrame = requestAnimationFrame(tick);
+            }
+            tick();
+        }
+
+        function fmt(s) {
+            if (!s || isNaN(s)) return '0:00';
+            const m = Math.floor(s / 60);
+            const sec = Math.floor(s % 60);
+            return `${m}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play();
+                document.getElementById('playBtn').textContent = '⏸';
+            } else {
+                audio.pause();
+                document.getElementById('playBtn').textContent = '▶';
+            }
+        }
+
+        function skipBack() {
+            audio.currentTime = Math.max(0, audio.currentTime - 5);
+        }
+
+        function skipFwd() {
+            audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+        }
+
+        function seekClick(e) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const ratio = (e.clientX - rect.left) / rect.width;
+            audio.currentTime = ratio * (audio.duration || 0);
+        }
+
+        audio.addEventListener('ended', () => {
+            document.getElementById('playBtn').textContent = '▶';
+        });
+    </script>
+</body>
+
+</html>

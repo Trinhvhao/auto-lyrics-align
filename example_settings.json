@@ -1,0 +1,64 @@
+{
+  "songId": "example_song_mp3_1000000",
+  "version": "7.6",
+  "exportedAt": "2024-01-01T12:00:00.000Z",
+  "bgPickTarget": "both",
+  "bgPath": {
+    "menu": "",
+    "display": ""
+  },
+  "bgBase64": {
+    "menu": null,
+    "display": null
+  },
+  "bgMime": {
+    "menu": null,
+    "display": null
+  },
+  "currentColor": "#f5f5f8",
+  "cSize": 20,
+  "textData": [
+    ["Intro", "#ff87eb", true, false, false, false, 0, "Phần mở đầu", true],
+    ["bài", "#ff87eb", false, false, false, false, 0, "", true],
+    ["hát", "#ff87eb", false, false, false, false, 0, "", true],
+    ["này", "#ff87eb", false, false, false, false, 0, "", true],
+    
+    ["Verse", "#4ba5ff", true, false, false, false, 1, "", false],
+    ["đầu", "#4ba5ff", false, false, false, false, 1, "", false],
+    ["tiên", "#4ba5ff", false, false, false, false, 1, "", false],
+    ["rất", "#ffff6e", false, true, false, false, 1, "", false],
+    ["hay", "#ffff6e", false, true, false, false, 1, "", false],
+    
+    ["Chorus", "#ff5555", true, true, true, false, 2, "Điệp khúc", false],
+    ["thật", "#ff5555", false, true, true, false, 2, "", false],
+    ["sự", "#ff5555", false, true, true, false, 2, "", false],
+    ["tuyệt", "#ffff6e", false, true, true, false, 2, "", true],
+    ["vời", "#ffff6e", false, true, true, false, 2, "", true],
+    
+    ["Bridge", "#a55fff", true, false, false, false, 3, "", true],
+    ["đoạn", "#a55fff", false, false, false, false, 3, "", true],
+    ["này", "#a55fff", false, false, false, false, 3, "", true],
+    ["chậm", "#a55fff", false, false, false, false, 3, "", true],
+    ["lại", "#a55fff", false, false, false, false, 3, "", true],
+    
+    ["Ending", "#ffff6e", true, true, true, false, 4, "Kết thúc", true],
+    ["thật", "#ffff6e", false, true, true, false, 4, "", true],
+    ["là", "#ffff6e", false, true, true, false, 4, "", true],
+    ["hoàn", "#ffff6e", false, true, true, false, 4, "", true],
+    ["hảo", "#ff87eb", false, true, true, false, 4, "", true]
+  ],
+  "questionData": {
+    "active": false,
+    "yesText": "",
+    "yesLabel": "Yes",
+    "noLabel": "No"
+  },
+  "autoTimings": [
+    0.5, 1.0, 1.5, 2.0,
+    3.0, 3.5, 4.0, 4.5, 5.0,
+    6.0, 6.5, 7.0, 7.5, 8.0,
+    9.0, 9.5, 10.0, 10.5, 11.0,
+    12.0, 12.5, 13.0, 13.5, 14.0
+  ],
+  "autoAudioUrl": null
+}

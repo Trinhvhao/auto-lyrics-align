@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 Apply JSON Settings - Karaoke</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        button {
+            background: linear-gradient(135deg, #ffd24d 0%, #ff9f4d 100%);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button.secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .status {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .success {
+            background: rgba(46, 168, 88, 0.3);
+            border: 2px solid #2ea858;
+        }
+
+        .info {
+            background: rgba(85, 155, 255, 0.3);
+            border: 2px solid #559bff;
+        }
+
+        .error {
+            background: rgba(235, 65, 65, 0.3);
+            border: 2px solid #eb4141;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            resize: vertical;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-block;
+            background: linear-gradient(135deg, #559bff 0%, #4b8aff 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            transition: transform 0.2s;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .file-label:hover {
+            transform: scale(1.05);
+        }
+
+        .stats {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #ffd24d;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎵 Apply JSON Settings</h1>
+
+        <div class="section">
+            <h3>📖 Hướng dẫn sử dụng:</h3>
+            <ol style="line-height:1.8">
+                <li>Từ chế độ <strong>EDIT</strong>, bấm nút <code>💾 Export JSON</code></li>
+                <li>File JSON sẽ được tải về máy</li>
+                <li>Để apply lại settings:
+                    <ul>
+                        <li><strong>Cách 1:</strong> Kéo thả file JSON vào app</li>
+                        <li><strong>Cách 2:</strong> Bấm nút <code>IMPORT JSON</code> trong menu</li>
+                        <li><strong>Cách 3:</strong> Dán JSON vào form bên dưới và bấm Apply</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h3>📁 Import từ file JSON:</h3>
+            <label for="fileInput" class="file-label">
+                📂 Chọn file JSON
+            </label>
+            <input type="file" id="fileInput" class="file-input" accept=".json,application/json">
+        </div>
+
+        <div class="section">
+            <h3>📝 Hoặc dán JSON trực tiếp:</h3>
+            <textarea id="jsonInput" placeholder='Dán nội dung JSON vào đây...
+
+Ví dụ:
+{
+  "songId": "music1.mp3_953149",
+  "textData": [
+    ["Duyên", "#ff87eb", true, false, false, false, 0, "", true],
+    ["của", "#ff87eb", false, false, false, false, 0, "", true]
+  ],
+  "autoTimings": [0.5, 1.2],
+  ...
+}'></textarea>
+            <button onclick="applyFromTextarea()">🚀 Apply JSON</button>
+        </div>
+
+        <div class="status info" id="status">
+            ℹ️ Chọn file hoặc dán JSON để bắt đầu
+        </div>
+
+        <div id="statsSection" style="display:none">
+            <div class="section">
+                <h3>📊 Thống kê settings:</h3>
+                <div class="stats" id="stats"></div>
+            </div>
+        </div>
+
+        <button class="secondary" onclick="window.location.href='http://localhost:7864/'">
+            ➡️ Mở Karaoke App
+        </button>
+    </div>
+
+    <script>
+        const statusEl = document.getElementById('status');
+        const statsEl = document.getElementById('stats');
+        const statsSection = document.getElementById('statsSection');
+
+        // Handle file input
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const json = ev.target.result;
+                    document.getElementById('jsonInput').value = json;
+                    applySettings(JSON.parse(json));
+                } catch (err) {
+                    showError('Lỗi đọc file: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        // Apply from textarea
+        function applyFromTextarea() {
+            const json = document.getElementById('jsonInput').value.trim();
+            if (!json) {
+                showError('Vui lòng dán JSON vào textarea');
+                return;
+            }
+
+            try {
+                const settings = JSON.parse(json);
+                applySettings(settings);
+            } catch (err) {
+                showError('JSON không hợp lệ: ' + err.message);
+            }
+        }
+
+        // Apply settings to localStorage
+        function applySettings(settings) {
+            try {
+                // Validate
+                if (!settings.textData || !Array.isArray(settings.textData)) {
+                    throw new Error('JSON không hợp lệ - thiếu textData');
+                }
+
+                // Determine storage key
+                const songId = settings.songId || 'imported_' + Date.now();
+                const key = 'karaoke_song_' + songId;
+
+                // Save to localStorage
+                localStorage.setItem(key, JSON.stringify(settings));
+
+                // Show success
+                statusEl.className = 'status success';
+                statusEl.innerHTML = `
+      ✅ <strong>Apply thành công!</strong><br><br>
+      Song ID: <code>${songId}</code><br>
+      Storage Key: <code>${key}</code>
+    `;
+
+                // Show stats
+                showStats(settings);
+
+                console.log('✅ Settings applied to localStorage');
+                console.log('Key:', key);
+                console.log('Settings:', settings);
+
+            } catch (err) {
+                showError('Lỗi apply settings: ' + err.message);
+            }
+        }
+
+        // Show statistics
+        function showStats(settings) {
+            const words = settings.textData.length;
+            const timings = settings.autoTimings?.length || 0;
+            const groups = new Set(settings.textData.filter(w => w[6] >= 0).map(w => w[6])).size;
+
+            const effects = {
+                wave: settings.textData.filter(w => w[2]).length,
+                flash: settings.textData.filter(w => w[3]).length,
+                star: settings.textData.filter(w => w[4]).length,
+                burst: settings.textData.filter(w => w[5]).length,
+                glow: settings.textData.filter(w => w[8]).length
+            };
+
+            const colors = new Set(settings.textData.map(w => w[1])).size;
+
+            statsEl.innerHTML = `
+    📝 <strong>Tổng số từ:</strong> ${words}<br>
+    🎵 <strong>Timing points:</strong> ${timings}<br>
+    👥 <strong>Groups:</strong> ${groups}<br>
+    🎨 <strong>Màu sắc:</strong> ${colors} màu khác nhau<br>
+    <br>
+    <strong>Hiệu ứng:</strong><br>
+    &nbsp;&nbsp;🌊 WAVE: ${effects.wave}<br>
+    &nbsp;&nbsp;⚡ FLASH: ${effects.flash}<br>
+    &nbsp;&nbsp;⭐ STAR: ${effects.star}<br>
+    &nbsp;&nbsp;💥 BURST: ${effects.burst}<br>
+    &nbsp;&nbsp;✨ GLOW: ${effects.glow}<br>
+    <br>
+    <strong>Background:</strong><br>
+    &nbsp;&nbsp;Menu: ${settings.bgPath?.menu ? '✓' : '—'}<br>
+    &nbsp;&nbsp;Display: ${settings.bgPath?.display ? '✓' : '—'}<br>
+    <br>
+    <strong>Question:</strong> ${settings.questionData?.active ? '✓ Có' : '—'}<br>
+    <strong>Version:</strong> ${settings.version || 'N/A'}<br>
+    <strong>Exported:</strong> ${settings.exportedAt ? new Date(settings.exportedAt).toLocaleString('vi-VN') : 'N/A'}
+  `;
+
+            statsSection.style.display = 'block';
+        }
+
+        // Show error
+        function showError(message) {
+            statusEl.className = 'status error';
+            statusEl.textContent = '❌ ' + message;
+            statsSection.style.display = 'none';
+            console.error('Error:', message);
+        }
+
+        // Drag & drop support
+        document.body.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        document.body.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const file = e.dataTransfer.files[0];
+            if (!file) return;
+
+            if (!file.name.endsWith('.json')) {
+                showError('Chỉ chấp nhận file .json');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const json = ev.target.result;
+                    document.getElementById('jsonInput').value = json;
+                    applySettings(JSON.parse(json));
+                } catch (err) {
+                    showError('Lỗi đọc file: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        });
+    </script>
+</body>
+
+</html>

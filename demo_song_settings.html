@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Song Settings - Duyên Trời</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .code {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .legend {
+            margin: 20px 0;
+        }
+
+        .legend-item {
+            display: inline-block;
+            margin: 5px 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎵 Demo Settings - Duyên Trời</h1>
+
+        <div class="info">
+            <h3>📝 Thông tin bài hát</h3>
+            <p><strong>Tên:</strong> Duyên Trời (Demo)</p>
+            <p><strong>Số từ:</strong> 72 từ</p>
+            <p><strong>Hiệu ứng:</strong> WAVE, FLASH, GLOW, STAR</p>
+            <p><strong>Nhóm:</strong> 4 nhóm (Intro, Verse, Chorus, Bridge)</p>
+        </div>
+
+        <div class="legend">
+            <h3>🎨 Chú thích màu sắc & hiệu ứng:</h3>
+            <div class="legend-item" style="background:#ff5555">🔴 Đỏ - Câu chính</div>
+            <div class="legend-item" style="background:#55eb55">🟢 Xanh lá - Câu phụ</div>
+            <div class="legend-item" style="background:#4ba5ff">🔵 Xanh dương - Điệp khúc</div>
+            <div class="legend-item" style="background:#ffff6e; color:#000">🟡 Vàng - Highlight</div>
+            <div class="legend-item" style="background:#ff87eb">🟣 Hồng - Lãng mạn</div>
+            <br>
+            <div class="legend-item" style="background:#00e1a5">🌊 WAVE - Sóng</div>
+            <div class="legend-item" style="background:#ffd71e; color:#000">⚡ FLASH - Nhấp nháy</div>
+            <div class="legend-item" style="background:#ffa028">⭐ STAR - Bắn pháo hoa</div>
+            <div class="legend-item" style="background:#b478ff">✨ GLOW - Phát sáng</div>
+        </div>
+
+        <div class="info">
+            <h3>💡 Cách sử dụng:</h3>
+            <ol>
+                <li>Mở console (F12)</li>
+                <li>Copy đoạn code bên dưới</li>
+                <li>Paste vào console và Enter</li>
+                <li>Hoặc bấm nút "Apply Settings" bên dưới</li>
+                <li>Reload trang auto_karaoke.html</li>
+                <li>Settings sẽ tự động load!</li>
+            </ol>
+        </div>
+
+        <h3>📦 Settings JSON:</h3>
+        <div class="code" id="settingsCode"></div>
+
+        <button onclick="applySettings()">🚀 Apply Settings to localStorage</button>
+        <div id="status" style="text-align:center; margin-top:15px; font-weight:bold;"></div>
+    </div>
+
+    <script>
+        // Demo song settings
+        const demoSettings = {
+            songId: "demo_duyen_troi_mp3_0",
+            bgPickTarget: "both",
+            bgPath: { menu: "", display: "" },
+            bgBase64: { menu: null, display: null },
+            bgMime: { menu: null, display: null },
+            currentColor: "#f5f5f8",
+            cSize: 20,
+
+            // Text data: [word, color, wave, flash, star, burst, groupId, note, glow]
+            textData: [
+                // Intro - Group 0 (Màu hồng, WAVE + GLOW)
+                ["Duyên", "#ff87eb", true, false, false, false, 0, "", true],
+                ["của", "#ff87eb", true, false, false, false, 0, "", true],
+                ["trời", "#ff87eb", true, false, false, false, 0, "", true],
+                ["anh", "#ff87eb", true, false, false, false, 0, "", true],
+                ["để", "#ff87eb", true, false, false, false, 0, "", true],
+                ["mặc", "#ff87eb", true, false, false, false, 0, "", true],
+                ["dần", "#ff87eb", true, false, false, false, 0, "", true],
+                ["trôi", "#ff87eb", true, false, false, false, 0, "", true],
+
+                // Verse 1 - Group 1 (Màu xanh dương)
+                ["Bật", "#4ba5ff", false, false, false, false, 1, "", false],
+                ["không", "#4ba5ff", false, false, false, false, 1, "", false],
+                ["biết", "#4ba5ff", false, false, false, false, 1, "", false],
+                ["mấy", "#4ba5ff", false, false, false, false, 1, "", false],
+                ["đèn", "#ffff6e", false, true, false, false, 1, "", false],
+                ["xanh", "#ffff6e", false, true, false, false, 1, "", false],
+                ["rồi", "#4ba5ff", false, false, false, false, 1, "", false],
+
+                // Verse 2 (Màu xanh lá)
+                ["Chỉ", "#55eb55", false, false, false, false, -1, "", false],
+                ["chờ", "#55eb55", false, false, false, false, -1, "", false],
+                ["anh", "#ffff6e", false, false, true, false, -1, "", false],
+                ["dám", "#ffff6e", false, false, true, false, -1, "", false],
+                ["nói", "#ffff6e", false, false, true, false, -1, "", false],
+
+                // Chorus 1 - Group 2 (Màu đỏ, FLASH + STAR)
+                ["Bỏ", "#ff5555", false, true, true, false, 2, "Điệp khúc chính", false],
+                ["lỡ", "#ff5555", false, true, true, false, 2, "", false],
+                ["rồi", "#ff5555", false, true, true, false, 2, "", false],
+                ["sẽ", "#ff5555", false, true, true, false, 2, "", false],
+                ["tiếc", "#ffff6e", false, true, true, false, 2, "", true],
+                ["cho", "#ff5555", false, true, true, false, 2, "", false],
+                ["mà", "#ff5555", false, true, true, false, 2, "", false],
+                ["xem", "#ff5555", false, true, true, false, 2, "", false],
+
+                // Verse 3 (Màu tím)
+                ["Người", "#a55fff", false, false, false, false, -1, "", false],
+                ["như", "#a55fff", false, false, false, false, -1, "", false],
+                ["anh", "#ffff6e", false, false, false, false, -1, "", false],
+                ["xứng", "#a55fff", false, false, false, false, -1, "", false],
+                ["đáng", "#a55fff", false, false, false, false, -1, "", false],
+                ["có", "#a55fff", false, false, false, false, -1, "", false],
+                ["em", "#ff87eb", false, false, true, false, -1, "", true],
+
+                // Verse 4 (Màu xanh lá)
+                ["Đừng", "#55eb55", false, false, false, false, -1, "", false],
+                ["suy", "#55eb55", false, false, false, false, -1, "", false],
+                ["nghĩ", "#55eb55", false, false, false, false, -1, "", false],
+                ["thêm", "#55eb55", false, false, false, false, -1, "", false],
+
+                // Bridge - Group 3 (Màu hồng, WAVE + GLOW)
+                ["Nhìn", "#ff87eb", true, false, false, false, 3, "", true],
+                ["anh", "#ff87eb", true, false, false, false, 3, "", true],
+                ["thấy", "#ff87eb", true, false, false, false, 3, "", true],
+                ["cô", "#ff87eb", true, false, false, false, 3, "", true],
+                ["đơn", "#ff87eb", true, false, false, false, 3, "", true],
+
+                // Verse 5 (Màu xanh dương)
+                ["Nên", "#4ba5ff", false, false, false, false, -1, "", false],
+                ["là", "#4ba5ff", false, false, false, false, -1, "", false],
+                ["em", "#ff87eb", false, false, false, false, -1, "", false],
+                ["cho", "#4ba5ff", false, false, false, false, -1, "", false],
+                ["phép", "#4ba5ff", false, false, false, false, -1, "", false],
+                ["anh", "#ffff6e", false, false, true, false, -1, "", false],
+                ["thương", "#ffff6e", false, false, true, false, -1, "", true],
+
+                // Verse 6 (Màu xanh lá)
+                ["Mong", "#55eb55", false, false, false, false, -1, "", false],
+                ["anh", "#55eb55", false, false, false, false, -1, "", false],
+                ["hiểu", "#55eb55", false, false, false, false, -1, "", false],
+                ["em", "#ff87eb", false, false, false, false, -1, "", false],
+                ["hơn", "#55eb55", false, false, false, false, -1, "", false],
+
+                // Verse 7 (Màu tím)
+                ["Bởi", "#a55fff", false, false, false, false, -1, "", false],
+                ["vì", "#a55fff", false, false, false, false, -1, "", false],
+                ["em", "#ff87eb", false, false, false, false, -1, "", false],
+                ["lúc", "#a55fff", false, false, false, false, -1, "", false],
+                ["yêu", "#ffff6e", false, true, true, false, -1, "", true],
+                ["rất", "#a55fff", false, false, false, false, -1, "", false],
+                ["là", "#a55fff", false, false, false, false, -1, "", false],
+                ["bất", "#ffff6e", false, true, false, false, -1, "", false],
+                ["thường", "#ffff6e", false, true, false, false, -1, "", false],
+
+                // Verse 8 (Màu xanh dương)
+                ["Dù", "#4ba5ff", false, false, false, false, -1, "", false],
+                ["chưa", "#4ba5ff", false, false, false, false, -1, "", false],
+                ["rõ", "#4ba5ff", false, false, false, false, -1, "", false],
+                ["nông", "#4ba5ff", false, false, false, false, -1, "", false],
+                ["sâu", "#4ba5ff", false, false, false, false, -1, "", false],
+
+                // Verse 9 (Màu xanh lá)
+                ["Nhưng", "#55eb55", false, false, false, false, -1, "", false],
+                ["mà", "#55eb55", false, false, false, false, -1, "", false],
+                ["anh", "#ffff6e", false, false, false, false, -1, "", false],
+                ["cứ", "#55eb55", false, false, false, false, -1, "", false],
+                ["mãi", "#55eb55", false, false, false, false, -1, "", false],
+                ["trong", "#55eb55", false, false, false, false, -1, "", false],
+                ["đầu", "#ffff6e", false, false, true, false, -1, "", true],
+
+                // Ending (Màu đỏ, FLASH + STAR + GLOW)
+                ["Bởi", "#ff5555", false, true, true, false, -1, "", false],
+                ["người", "#ff5555", false, true, true, false, -1, "", false],
+                ["xưa", "#ff5555", false, true, true, false, -1, "", false],
+                ["mới", "#ff5555", false, true, true, false, -1, "", false],
+                ["hay", "#ff5555", false, true, true, false, -1, "", false],
+                ["có", "#ff5555", false, true, true, false, -1, "", false],
+                ["câu", "#ff5555", false, true, true, false, -1, "", false],
+                ["Có", "#ffff6e", false, true, true, false, -1, "", true],
+                ["công", "#ffff6e", false, true, true, false, -1, "", true],
+                ["mài", "#ffff6e", false, true, true, false, -1, "", true],
+                ["sắc", "#ffff6e", false, true, true, false, -1, "", true],
+                ["có", "#ffff6e", false, true, true, false, -1, "", true],
+                ["ngày", "#ffff6e", false, true, true, false, -1, "", true],
+                ["nên", "#ffff6e", false, true, true, false, -1, "", true],
+                ["duyên", "#ff87eb", true, true, true, false, -1, "", true]
+            ],
+
+            questionData: {
+                active: false,
+                yesText: "",
+                yesLabel: "Yes",
+                noLabel: "No"
+            },
+
+            autoTimings: [], // Sẽ được tạo khi chạy alignment
+            autoAudioUrl: null,
+            savedAt: new Date().toISOString()
+        };
+
+        // Display settings
+        document.getElementById('settingsCode').textContent = JSON.stringify(demoSettings, null, 2);
+
+        function applySettings() {
+            try {
+                const key = 'karaoke_song_' + demoSettings.songId;
+                localStorage.setItem(key, JSON.stringify(demoSettings));
+
+                document.getElementById('status').innerHTML = '✅ <span style="color:#2ea858">Settings đã được lưu vào localStorage!</span><br>Bây giờ mở trang auto_karaoke.html và chọn file nhạc demo.';
+
+                console.log('✅ Demo settings applied!');
+                console.log('Song ID:', demoSettings.songId);
+                console.log('Total words:', demoSettings.textData.length);
+            } catch (e) {
+                document.getElementById('status').innerHTML = '❌ <span style="color:#eb4141">Lỗi: ' + e.message + '</span>';
+                console.error('Error:', e);
+            }
+        }
+
+        // Auto-apply on load
+        console.log('📦 Demo settings ready!');
+        console.log('Run applySettings() to save to localStorage');
+    </script>
+</body>
+
+</html>

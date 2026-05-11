@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎵 Apply Settings - Music1.mp3</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+.container {
+  background: rgba(255,255,255,0.1);
+  padding: 30px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+h1 { text-align: center; margin-bottom: 30px; }
+.status {
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+.success { background: rgba(46,168,88,0.3); border: 2px solid #2ea858; }
+.info { background: rgba(85,155,255,0.3); border: 2px solid #559bff; }
+.section {
+  background: rgba(0,0,0,0.3);
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+button {
+  background: linear-gradient(135deg, #ffd24d 0%, #ff9f4d 100%);
+  color: #000;
+  border: none;
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  margin: 10px 0;
+  transition: transform 0.2s;
+}
+button:hover { transform: scale(1.05); }
+.lyrics {
+  background: rgba(0,0,0,0.2);
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.8;
+  max-height: 300px;
+  overflow-y: auto;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🎵 Auto Apply Settings - Music1.mp3</h1>
+  
+  <div class="section">
+    <h3>📝 Lời bài hát:</h3>
+    <div class="lyrics">
+      Duyên của trời anh để mặc dần trôi<br>
+      Bật không biết mấy đèn xanh rồi<br>
+      Chỉ chờ anh dám nói<br>
+      Bỏ lỡ rồi sẽ tiếc cho mà xem<br>
+      Người như anh xứng đáng có em<br>
+      Đừng suy nghĩ thêm<br>
+      Nhìn anh thấy cô đơn<br>
+      Nên là em cho phép anh thương<br>
+      Mong anh hiểu em hơn<br>
+      Bởi vì em lúc yêu rất là bất thường<br>
+      Dù chưa rõ nông sâu<br>
+      Nhưng mà anh cứ mãi trong đầu<br>
+      Bởi người xưa mới hay có câu<br>
+      Có công mài sắc có ngày nên duyên
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>🎨 Hiệu ứng:</h3>
+    <ul style="line-height:1.8">
+      <li>🌊 <strong>WAVE</strong>: Đầu mỗi đoạn (clear màn hình)</li>
+      <li>⚡ <strong>FLASH</strong>: Từ highlight quan trọng</li>
+      <li>⭐ <strong>STAR</strong>: Pháo hoa cho từ đặc biệt</li>
+      <li>✨ <strong>GLOW</strong>: Phát sáng cho từ lãng mạn</li>
+      <li>🎨 <strong>Màu sắc</strong>: 6 màu khác nhau theo cảm xúc</li>
+      <li>👥 <strong>Groups</strong>: 5 nhóm từ tự động chạy</li>
+    </ul>
+  </div>
+
+  <div class="status info" id="status">
+    ⏳ Đang apply settings...
+  </div>
+
+  <button onclick="applySettings()">🚀 Apply Settings Ngay</button>
+  <button onclick="window.location.href='http://localhost:7864/'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    ➡️ Mở Karaoke App
+  </button>
+</div>
+
+<script>
+// Settings cho music1.mp3 (size 953149)
+const music1Settings = {
+  songId: "music1.mp3_953149",
+  bgPickTarget: "both",
+  bgPath: { menu: "", display: "" },
+  bgBase64: { menu: null, display: null },
+  bgMime: { menu: null, display: null },
+  currentColor: "#f5f5f8",
+  cSize: 20,
+  
+  // Text data: [word, color, wave, flash, star, burst, groupId, note, glow]
+  textData: [
+    // Đoạn 1 - Group 0 (Intro - Màu hồng, WAVE + GLOW)
+    ["Duyên", "#ff87eb", true, false, false, false, 0, "", true],
+    ["của", "#ff87eb", false, false, false, false, 0, "", true],
+    ["trời", "#ff87eb", false, false, false, false, 0, "", true],
+    ["anh", "#ff87eb", false, false, false, false, 0, "", true],
+    ["để", "#ff87eb", false, false, false, false, 0, "", true],
+    ["mặc", "#ff87eb", false, false, false, false, 0, "", true],
+    ["dần", "#ff87eb", false, false, false, false, 0, "", true],
+    ["trôi", "#ff87eb", false, false, false, false, 0, "", true],
+    
+    // Đoạn 2 - Group 1 (WAVE để clear, màu xanh dương)
+    ["Bật", "#4ba5ff", true, false, false, false, 1, "", false],
+    ["không", "#4ba5ff", false, false, false, false, 1, "", false],
+    ["biết", "#4ba5ff", false, false, false, false, 1, "", false],
+    ["mấy", "#4ba5ff", false, false, false, false, 1, "", false],
+    ["đèn", "#ffff6e", false, true, false, false, 1, "", false],
+    ["xanh", "#ffff6e", false, true, false, false, 1, "", false],
+    ["rồi", "#4ba5ff", false, false, false, false, 1, "", false],
+    
+    // Đoạn 3 (WAVE, màu xanh lá)
+    ["Chỉ", "#55eb55", true, false, false, false, -1, "", false],
+    ["chờ", "#55eb55", false, false, false, false, -1, "", false],
+    ["anh", "#ffff6e", false, false, true, false, -1, "", false],
+    ["dám", "#ffff6e", false, false, true, false, -1, "", false],
+    ["nói", "#ffff6e", false, false, true, false, -1, "", false],
+    
+    // Đoạn 4 - Group 2 (Chorus - WAVE, FLASH + STAR, màu đỏ)
+    ["Bỏ", "#ff5555", true, true, true, false, 2, "Điệp khúc", false],
+    ["lỡ", "#ff5555", false, true, true, false, 2, "", false],
+    ["rồi", "#ff5555", false, true, true, false, 2, "", false],
+    ["sẽ", "#ff5555", false, true, true, false, 2, "", false],
+    ["tiếc", "#ffff6e", false, true, true, false, 2, "", true],
+    ["cho", "#ff5555", false, true, true, false, 2, "", false],
+    ["mà", "#ff5555", false, true, true, false, 2, "", false],
+    ["xem", "#ff5555", false, true, true, false, 2, "", false],
+    
+    // Đoạn 5 (WAVE, màu tím)
+    ["Người", "#a55fff", true, false, false, false, -1, "", false],
+    ["như", "#a55fff", false, false, false, false, -1, "", false],
+    ["anh", "#ffff6e", false, false, false, false, -1, "", false],
+    ["xứng", "#a55fff", false, false, false, false, -1, "", false],
+    ["đáng", "#a55fff", false, false, false, false, -1, "", false],
+    ["có", "#a55fff", false, false, false, false, -1, "", false],
+    ["em", "#ff87eb", false, false, true, false, -1, "", true],
+    
+    // Đoạn 6 (WAVE, màu xanh lá)
+    ["Đừng", "#55eb55", true, false, false, false, -1, "", false],
+    ["suy", "#55eb55", false, false, false, false, -1, "", false],
+    ["nghĩ", "#55eb55", false, false, false, false, -1, "", false],
+    ["thêm", "#55eb55", false, false, false, false, -1, "", false],
+    
+    // Đoạn 7 - Group 3 (Bridge - WAVE + GLOW, màu hồng)
+    ["Nhìn", "#ff87eb", true, false, false, false, 3, "", true],
+    ["anh", "#ff87eb", false, false, false, false, 3, "", true],
+    ["thấy", "#ff87eb", false, false, false, false, 3, "", true],
+    ["cô", "#ff87eb", false, false, false, false, 3, "", true],
+    ["đơn", "#ff87eb", false, false, false, false, 3, "", true],
+    
+    // Đoạn 8 (WAVE, màu xanh dương)
+    ["Nên", "#4ba5ff", true, false, false, false, -1, "", false],
+    ["là", "#4ba5ff", false, false, false, false, -1, "", false],
+    ["em", "#ff87eb", false, false, false, false, -1, "", false],
+    ["cho", "#4ba5ff", false, false, false, false, -1, "", false],
+    ["phép", "#4ba5ff", false, false, false, false, -1, "", false],
+    ["anh", "#ffff6e", false, false, true, false, -1, "", false],
+    ["thương", "#ffff6e", false, false, true, false, -1, "", true],
+    
+    // Đoạn 9 (WAVE, màu xanh lá)
+    ["Mong", "#55eb55", true, false, false, false, -1, "", false],
+    ["anh", "#55eb55", false, false, false, false, -1, "", false],
+    ["hiểu", "#55eb55", false, false, false, false, -1, "", false],
+    ["em", "#ff87eb", false, false, false, false, -1, "", false],
+    ["hơn", "#55eb55", false, false, false, false, -1, "", false],
+    
+    // Đoạn 10 (WAVE, màu tím)
+    ["Bởi", "#a55fff", true, false, false, false, -1, "", false],
+    ["vì", "#a55fff", false, false, false, false, -1, "", false],
+    ["em", "#ff87eb", false, false, false, false, -1, "", false],
+    ["lúc", "#a55fff", false, false, false, false, -1, "", false],
+    ["yêu", "#ffff6e", false, true, true, false, -1, "", true],
+    ["rất", "#a55fff", false, false, false, false, -1, "", false],
+    ["là", "#a55fff", false, false, false, false, -1, "", false],
+    ["bất", "#ffff6e", false, true, false, false, -1, "", false],
+    ["thường", "#ffff6e", false, true, false, false, -1, "", false],
+    
+    // Đoạn 11 (WAVE, màu xanh dương)
+    ["Dù", "#4ba5ff", true, false, false, false, -1, "", false],
+    ["chưa", "#4ba5ff", false, false, false, false, -1, "", false],
+    ["rõ", "#4ba5ff", false, false, false, false, -1, "", false],
+    ["nông", "#4ba5ff", false, false, false, false, -1, "", false],
+    ["sâu", "#4ba5ff", false, false, false, false, -1, "", false],
+    
+    // Đoạn 12 (WAVE, màu xanh lá)
+    ["Nhưng", "#55eb55", true, false, false, false, -1, "", false],
+    ["mà", "#55eb55", false, false, false, false, -1, "", false],
+    ["anh", "#ffff6e", false, false, false, false, -1, "", false],
+    ["cứ", "#55eb55", false, false, false, false, -1, "", false],
+    ["mãi", "#55eb55", false, false, false, false, -1, "", false],
+    ["trong", "#55eb55", false, false, false, false, -1, "", false],
+    ["đầu", "#ffff6e", false, false, true, false, -1, "", true],
+    
+    // Đoạn 13 (WAVE, màu đỏ)
+    ["Bởi", "#ff5555", true, false, true, false, -1, "", false],
+    ["người", "#ff5555", false, false, true, false, -1, "", false],
+    ["xưa", "#ff5555", false, false, true, false, -1, "", false],
+    ["mới", "#ff5555", false, false, true, false, -1, "", false],
+    ["hay", "#ff5555", false, false, true, false, -1, "", false],
+    ["có", "#ff5555", false, false, true, false, -1, "", false],
+    ["câu", "#ff5555", false, false, true, false, -1, "", false],
+    
+    // Đoạn 14 - Group 4 (Ending - WAVE, ALL effects, màu vàng)
+    ["Có", "#ffff6e", true, true, true, false, 4, "", true],
+    ["công", "#ffff6e", false, true, true, false, 4, "", true],
+    ["mài", "#ffff6e", false, true, true, false, 4, "", true],
+    ["sắc", "#ffff6e", false, true, true, false, 4, "", true],
+    ["có", "#ffff6e", false, true, true, false, 4, "", true],
+    ["ngày", "#ffff6e", false, true, true, false, 4, "", true],
+    ["nên", "#ffff6e", false, true, true, false, 4, "", true],
+    ["duyên", "#ff87eb", false, true, true, false, 4, "", true]
+  ],
+  
+  questionData: {
+    active: false,
+    yesText: "",
+    yesLabel: "Yes",
+    noLabel: "No"
+  },
+  
+  autoTimings: [],
+  autoAudioUrl: null,
+  savedAt: new Date().toISOString()
+};
+
+function applySettings() {
+  try {
+    const key = 'karaoke_song_' + music1Settings.songId;
+    localStorage.setItem(key, JSON.stringify(music1Settings));
+    
+    const statusEl = document.getElementById('status');
+    statusEl.className = 'status success';
+    statusEl.innerHTML = `
+      ✅ <strong>Apply thành công!</strong><br><br>
+      📊 Thống kê:<br>
+      - Tổng số từ: ${music1Settings.textData.length}<br>
+      - Số groups: 5 (Intro, Verse, Chorus, Bridge, Ending)<br>
+      - WAVE: ${music1Settings.textData.filter(w => w[2]).length} từ<br>
+      - FLASH: ${music1Settings.textData.filter(w => w[3]).length} từ<br>
+      - STAR: ${music1Settings.textData.filter(w => w[4]).length} từ<br>
+      - GLOW: ${music1Settings.textData.filter(w => w[8]).length} từ<br><br>
+      🎯 <strong>Bây giờ:</strong><br>
+      1. Bấm nút "Mở Karaoke App" bên dưới<br>
+      2. Chọn file <strong>music1.mp3</strong> (size: 953149 bytes)<br>
+      3. Thấy "✓ Đã load settings (${music1Settings.textData.length} từ)"<br>
+      4. Bấm "Bỏ qua →" để vào menu<br>
+      5. Bấm START để xem!
+    `;
+    
+    console.log('✅ Settings applied successfully!');
+    console.log('Song ID:', music1Settings.songId);
+    console.log('Total words:', music1Settings.textData.length);
+    
+  } catch(e) {
+    const statusEl = document.getElementById('status');
+    statusEl.className = 'status error';
+    statusEl.textContent = '❌ Lỗi: ' + e.message;
+    console.error('Error:', e);
+  }
+}
+
+// Auto-apply on page load
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    applySettings();
+  }, 500);
+});
+</script>
+</body>
+</html>

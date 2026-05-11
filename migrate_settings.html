@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔄 Migrate Settings - Đổi tên file</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+.container {
+  background: rgba(255,255,255,0.1);
+  padding: 30px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+h1 { text-align: center; margin-bottom: 30px; }
+.section {
+  background: rgba(0,0,0,0.3);
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+.song-list {
+  max-height: 300px;
+  overflow-y: auto;
+  background: rgba(0,0,0,0.2);
+  padding: 15px;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+.song-item {
+  background: rgba(255,255,255,0.1);
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+.song-item:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateX(5px);
+}
+.song-item.selected {
+  border-color: #ffd24d;
+  background: rgba(255,210,77,0.2);
+}
+.song-name { font-weight: bold; font-size: 14px; margin-bottom: 5px; }
+.song-info { font-size: 12px; color: rgba(255,255,255,0.7); }
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  background: rgba(0,0,0,0.3);
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  margin: 10px 0;
+}
+input[type="text"]:focus {
+  outline: none;
+  border-color: #ffd24d;
+}
+button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 5px;
+  transition: transform 0.2s;
+}
+button:hover { transform: scale(1.05); }
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn-primary { background: linear-gradient(135deg, #ffd24d 0%, #ff9f4d 100%); color: #000; }
+.btn-danger { background: linear-gradient(135deg, #ff5555 0%, #ff3333 100%); }
+.status {
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+  text-align: center;
+  font-weight: bold;
+  display: none;
+}
+.status.success { background: rgba(46,168,88,0.3); border: 2px solid #2ea858; display: block; }
+.status.error { background: rgba(235,65,65,0.3); border: 2px solid #eb4141; display: block; }
+.status.info { background: rgba(85,155,255,0.3); border: 2px solid #559bff; display: block; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🔄 Migrate Settings - Đổi tên file</h1>
+  
+  <div class="section">
+    <h3>📋 Bước 1: Chọn bài nhạc cần migrate</h3>
+    <p style="font-size:13px; color:rgba(255,255,255,0.7)">Click vào bài nhạc bạn muốn đổi tên</p>
+    <div class="song-list" id="songList"></div>
+    <button onclick="refreshList()">🔄 Refresh</button>
+  </div>
+
+  <div class="section">
+    <h3>✏️ Bước 2: Nhập tên file mới</h3>
+    <p style="font-size:13px; color:rgba(255,255,255,0.7)">Nhập tên file mới (bao gồm .mp3)</p>
+    <input type="text" id="newFileName" placeholder="Ví dụ: music1.mp3" />
+    <div style="font-size:12px; color:rgba(255,255,255,0.6); margin-top:5px">
+      💡 Tip: Tên file phải giống CHÍNH XÁC với file bạn sẽ upload
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>🎯 Bước 3: Migrate</h3>
+    <button class="btn-primary" onclick="migrateSettings()" id="btnMigrate" disabled>
+      🚀 Migrate Settings
+    </button>
+    <button class="btn-danger" onclick="deleteSelected()" id="btnDelete" disabled>
+      🗑️ Xóa bài cũ
+    </button>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <div class="section">
+    <h3>ℹ️ Hướng dẫn</h3>
+    <ol style="line-height:1.8; font-size:14px">
+      <li>Chọn bài nhạc từ danh sách</li>
+      <li>Nhập tên file mới (ví dụ: <code>music1.mp3</code>)</li>
+      <li>Bấm "Migrate Settings"</li>
+      <li>Settings sẽ được copy sang tên file mới</li>
+      <li>Bạn có thể xóa bài cũ nếu muốn</li>
+      <li>Reload trang karaoke và chọn file với tên mới</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+const STORAGE_PREFIX = 'karaoke_song_';
+let selectedSong = null;
+
+function refreshList() {
+  const listEl = document.getElementById('songList');
+  listEl.innerHTML = '';
+  
+  const songs = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key.startsWith(STORAGE_PREFIX)) {
+      try {
+        const data = JSON.parse(localStorage.getItem(key));
+        const songId = key.replace(STORAGE_PREFIX, '');
+        
+        // Parse song ID to get filename
+        const parts = songId.split('_');
+        const size = parts.pop();
+        const filename = parts.join('_');
+        
+        songs.push({
+          key: key,
+          songId: songId,
+          filename: filename,
+          size: size,
+          wordCount: data.textData?.length || 0,
+          timingCount: data.autoTimings?.length || 0,
+          savedAt: data.savedAt
+        });
+      } catch(e) {}
+    }
+  }
+  
+  if (songs.length === 0) {
+    listEl.innerHTML = '<div style="text-align:center; padding:20px; color:rgba(255,255,255,0.5)">Không có bài nào được lưu</div>';
+    return;
+  }
+  
+  songs.sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+  
+  songs.forEach(song => {
+    const div = document.createElement('div');
+    div.className = 'song-item';
+    div.onclick = () => selectSong(song);
+    
+    div.innerHTML = `
+      <div class="song-name">📁 ${song.filename}</div>
+      <div class="song-info">
+        📊 ${song.wordCount} từ, ${song.timingCount} mốc | 
+        💾 ${new Date(song.savedAt).toLocaleString('vi-VN')} |
+        📦 ${(parseInt(song.size) / 1024 / 1024).toFixed(2)} MB
+      </div>
+    `;
+    
+    listEl.appendChild(div);
+  });
+}
+
+function selectSong(song) {
+  selectedSong = song;
+  
+  // Update UI
+  document.querySelectorAll('.song-item').forEach(el => el.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  
+  // Enable buttons
+  document.getElementById('btnMigrate').disabled = false;
+  document.getElementById('btnDelete').disabled = false;
+  
+  // Pre-fill new filename
+  const newName = song.filename.replace(/[^a-zA-Z0-9.]/g, '_');
+  document.getElementById('newFileName').value = newName;
+  
+  showStatus(`✓ Đã chọn: ${song.filename}`, 'info');
+}
+
+function migrateSettings() {
+  if (!selectedSong) {
+    showStatus('❌ Chưa chọn bài nhạc!', 'error');
+    return;
+  }
+  
+  const newFileName = document.getElementById('newFileName').value.trim();
+  if (!newFileName) {
+    showStatus('❌ Chưa nhập tên file mới!', 'error');
+    return;
+  }
+  
+  if (!newFileName.endsWith('.mp3')) {
+    showStatus('⚠️ Tên file nên có đuôi .mp3', 'error');
+    return;
+  }
+  
+  try {
+    // Load old settings
+    const oldSettings = JSON.parse(localStorage.getItem(selectedSong.key));
+    
+    // Create new song ID
+    const newSongId = `${newFileName}_${selectedSong.size}`;
+    const newKey = STORAGE_PREFIX + newSongId;
+    
+    // Check if already exists
+    if (localStorage.getItem(newKey)) {
+      if (!confirm(`⚠️ Đã có settings cho file "${newFileName}".\nGhi đè?`)) {
+        return;
+      }
+    }
+    
+    // Update song ID
+    oldSettings.songId = newSongId;
+    oldSettings.migratedFrom = selectedSong.songId;
+    oldSettings.migratedAt = new Date().toISOString();
+    
+    // Save with new key
+    localStorage.setItem(newKey, JSON.stringify(oldSettings));
+    
+    showStatus(`✅ Migrate thành công!\n\nFile cũ: ${selectedSong.filename}\nFile mới: ${newFileName}\n\nBây giờ upload file "${newFileName}" vào karaoke!`, 'success');
+    
+    // Refresh list
+    setTimeout(() => {
+      refreshList();
+      selectedSong = null;
+      document.getElementById('btnMigrate').disabled = true;
+      document.getElementById('btnDelete').disabled = true;
+    }, 2000);
+    
+  } catch(e) {
+    showStatus('❌ Lỗi: ' + e.message, 'error');
+  }
+}
+
+function deleteSelected() {
+  if (!selectedSong) {
+    showStatus('❌ Chưa chọn bài nhạc!', 'error');
+    return;
+  }
+  
+  if (!confirm(`⚠️ Xóa settings cho:\n${selectedSong.filename}\n\nKhông thể hoàn tác!`)) {
+    return;
+  }
+  
+  try {
+    localStorage.removeItem(selectedSong.key);
+    showStatus(`✅ Đã xóa: ${selectedSong.filename}`, 'success');
+    
+    selectedSong = null;
+    document.getElementById('btnMigrate').disabled = true;
+    document.getElementById('btnDelete').disabled = true;
+    
+    refreshList();
+  } catch(e) {
+    showStatus('❌ Lỗi: ' + e.message, 'error');
+  }
+}
+
+function showStatus(msg, type) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status ' + type;
+  
+  if (type === 'success' || type === 'info') {
+    setTimeout(() => {
+      el.style.display = 'none';
+    }, 5000);
+  }
+}
+
+// Init
+refreshList();
+</script>
+</body>
+</html>
