@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+.env
+
+# Editor settings
+.vscode/
+
+# Runtime data
+uploads/
+.gradio/
+
+# Large model weights
+models/lyric-alignment/pytorch_model.bin
+
+# OS
+.DS_Store

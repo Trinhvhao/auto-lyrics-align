@@ -1,0 +1,13 @@
+{
+  "bos_token": "<s>",
+  "do_lower_case": false,
+  "eos_token": "</s>",
+  "name_or_path": "./model-bin",
+  "pad_token": "<pad>",
+  "replace_word_delimiter_char": " ",
+  "special_tokens_map_file": null,
+  "tokenizer_class": "Wav2Vec2CTCTokenizer",
+  "tokenizer_file": null,
+  "unk_token": "<unk>",
+  "word_delimiter_token": "|"
+}
